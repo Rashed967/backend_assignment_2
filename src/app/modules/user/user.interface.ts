@@ -1,4 +1,4 @@
-import { Model } from "mongoose"
+import { Model } from 'mongoose'
 
 // user address interface
 export interface IAddress {
@@ -7,8 +7,8 @@ export interface IAddress {
     country: string
 }
 
-// user orders interface
-export interface IOrders {
+// user Product interface
+export interface IProduct {
     productName: string
     price: number
     quantity: number
@@ -21,9 +21,10 @@ export interface IFullName {
 }
 
 // user new Model interface
-export interface IUserModel extends Model<IUser>{
+export interface IUserModel extends Model<IUser> {
     // check if user exists in databse
     isUserExists(id: string): Promise<IUser | null>
+    calculateOrdersPrice(id: string): Promise<number>
 }
 
 export default interface IUser {
@@ -36,5 +37,5 @@ export default interface IUser {
     isActive?: boolean
     hobbies: string[]
     address: IAddress
-    orders: IOrders[]
+    orders: IProduct[]
 }

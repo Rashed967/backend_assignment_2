@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { userValidationSchema } from './user.validation'
+import { userProductValidation, userValidationSchema } from './user.validation'
 import { userServices } from './user.serviceses'
 import { User } from './user.model'
 
@@ -139,10 +139,105 @@ const deleteUserById = async (req: Request, res: Response) => {
     }
 }
 
+// orders
+// add product to db
+const addProductToOrders = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params
+        const existingUser = await User.isUserExists(userId)
+        if (!existingUser) {
+            throw new Error('did not matched any user with this id')
+        } else {
+            const newProduct = req.body.data
+            const { error, value } = userProductValidation.validate(newProduct)
+            if (error) {
+                throw new Error(
+                    'Product validaion error, must validate all fields'
+                )
+            } else {
+                const result = await userServices.addProductToOrdersInDb(
+                    userId,
+                    value
+                )
+                res.status(200).json({
+                    success: true,
+                    messag: 'product added to the orders successfully',
+                    data: result,
+                })
+            }
+        }
+    } catch (error: any) {
+        res.status(404).json({
+            success: false,
+            message: 'product did not added',
+            error: error.message || 'something went wrong',
+        })
+    }
+}
+
+// get orders of a specefic user by id
+const getOrdersOfASpeceficUserById = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params
+        const existingUser = await User.isUserExists(userId)
+        if (!existingUser) {
+            throw new Error('did not matched any user with this id')
+        } else {
+            const result =
+                await userServices.getAllOrdersForSpecificUerByIdInDb(userId)
+            res.status(200).json({
+                success: true,
+                message: 'All orders found successfully',
+                data: result,
+            })
+        }
+    } catch (error: any) {
+        res.status(404).json({
+            success: false,
+            message: 'did not find users orders',
+            error: error.message || 'something went wrong',
+        })
+    }
+}
+
+// get single user all ordrs prices
+const getAllOrderPriceOfASingleUserById = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const { userId } = req.params
+
+        const existingUser = await User.isUserExists(userId)
+
+        if (!existingUser) {
+            throw new Error('did not match any user with this id')
+        } else {
+            const result =
+                await userServices.getTotalOrderPriceOfASingleUerFromDb(userId)
+
+            res.status(200).json({
+                success: true,
+                mesage: "user's totatl price found successfully",
+                data: result,
+            })
+        }
+    } catch (error: any) {
+        res.status(404).json({
+            success: false,
+            message: 'did not found total price',
+            error: error.message || 'something went wrong',
+        })
+    }
+}
+
 export const userControllers = {
     createUser,
     getAllUser,
     getSingleUserById,
     updateSingleUserById,
     deleteUserById,
+    addProductToOrders,
+    getOrdersOfASpeceficUserById,
+    getAllOrderPriceOfASingleUserById,
 }
