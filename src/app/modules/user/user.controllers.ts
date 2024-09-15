@@ -55,7 +55,7 @@ const getSingleUserById = async (req: Request, res: Response) => {
         const { userId } = req.params
         const existingUser = await User.isUserExists(userId)
         if (!existingUser) {
-            throw new Error('cannot found any user matched with this id')
+            throw new Error('did not find any user matched with this id')
         } else {
             const result = await userServices.getSigleUserByIdFromDb(userId)
             res.json({
@@ -85,7 +85,7 @@ const updateSingleUserById = async (req: Request, res: Response) => {
         const { userId } = req.params
         const existingUser = await User.isUserExists(userId)
         if (!existingUser) {
-            throw new Error('cannot matched any user with this id')
+            throw new Error('did matched any user with this id')
         } else {
             const dataToBeUpdated = req.body.data
 
@@ -103,7 +103,7 @@ const updateSingleUserById = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(400).json({
             success: false,
-            message: 'something went wrong, cannot update this user data',
+            message: 'something went wrong, did not update this user data',
             error: error.message || 'something went wrong',
         })
     }
