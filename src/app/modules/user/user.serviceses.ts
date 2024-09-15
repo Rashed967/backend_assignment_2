@@ -1,4 +1,4 @@
-import { Types } from 'mongoose'
+
 import IUser, { IProduct } from './user.interface'
 import { User } from './user.model'
 
