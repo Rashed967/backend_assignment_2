@@ -7,11 +7,15 @@ import config from './app/config'
 let server: Server
 
 async function main() {
-    await mongoose.connect(config.database_url as string)
+    try {
+        await mongoose.connect(config.database_url as string)
 
-    server = app.listen(config.port, () => {
-        console.log(`Example app listening on port ${config.port}`)
-    })
+        server = app.listen(config.port, () => {
+            console.log(`Example app listening on port ${config.port}`)
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 main()
