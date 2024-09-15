@@ -49,33 +49,6 @@ userSchema.static('isUserExists', async function isUserExists(id: string) {
     return existingUser
 })
 
-// declare calculateOrderPriceses stattic method
-userSchema.static(
-    'calculateOrdersPrice',
-    async function calculateOrdersPrice(id: string) {
-        return this.aggregate([
-            // match stage
-            {
-                $match: { userId: id },
-            },
-            // unwind stage
-            {
-                $unwind: '$orders',
-            },
-            // group stage
-            {
-                $group: {
-                    _id: '$studentId',
-                    totalPrice: {
-                        $sum: {
-                            $multiply: ['$orders.price', '$orders.quantity'],
-                        },
-                    },
-                },
-            },
-        ])
-    }
-)
 
 // pre hook for hassing password
 userSchema.pre('save', async function (next) {
